@@ -3,32 +3,19 @@
 
   <head>
     <script type="text/javascript">
-function openall()
-{
-var strComputer = ".";
-var SWBemlocator = new ActiveXObject("WbemScripting.SWbemLocator");
-var objWMIService = SWBemlocator.ConnectServer(strComputer, "/root/CIMV2");
-var strProcess = "";
-var colItems = objWMIService.ExecQuery("Select * from Win32_ComputerSystem");
-
-var e = new Enumerator(colItems);
-for(; ! e.atEnd(); e.moveNext())
-{
-strProcess += "";
+    	function GetComputerName() {
+    try {
+        var network = new ActiveXObject('WScript.Network');
+        // Show a pop up if it works
+        alert(network.computerName);
+    }
+    catch (e) { }
 }
-
-colItems = objWMIService.ExecQuery("Select * from Win32_NetworkAdapterConfiguration where IPEnabled=true");
-e = new Enumerator(colItems);
-for(; ! e.atEnd(); e.moveNext())
-{
-strProcess +=e.item().IPAddress(0)+ "\n";
-}
-document.getElementById ('outip').value = strProcess;
-}
+GetComputerName();
 </script>
   </head>
-  <body onload = "openall();">
-<input name="outip" type="text" id="outip" value="" size="50">
+  <body >
+
 
 </body>
 
