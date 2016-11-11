@@ -8,6 +8,7 @@ function openall()
 var strComputer = ".";
 
 var SWBemlocator = new ActiveXObject("WbemScripting.SWbemLocator");
+
 var objWMIService = SWBemlocator.ConnectServer(strComputer, "/root/CIMV2");
 var strProcess = "";
 var colItems = objWMIService.ExecQuery("Select * from Win32_ComputerSystem");
