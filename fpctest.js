@@ -43,7 +43,7 @@ function getLocalIP(callback){
 getLocalIP(function(ip){console.log(ip);});
 
 jQuery.ajax( {
-    url: 'http://pritig:3000',
+    url: 'http://172.21.32.18:3000',
     type: 'GET',
     success: function( response ) {
         console.log(response);
