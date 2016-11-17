@@ -7,11 +7,8 @@ var fpc = {
         var deviceInfo = fpc.getDeviceInfo(client);
         var screenInfo = fpc.getScreenInfo();
         var browserName = fpc.getBrowser(client);
-        var localIp = fpc.getLocalIP(
-            function(ip) {
-                console.log(ip);
-                
-            });
+        var pc = fpc.getLocalIP();
+            console.log(pc());
         
         },
     getFingerPrint: function (client) {
@@ -46,35 +43,25 @@ var fpc = {
     };
         return screenInfo;
     },
-    getLocalIP: function (callback) {
-        var ipDuplicate = {};
-        var RTCPeerConnection = window.RTCPeerConnection
-            || window.mozRTCPeerConnection
-            || window.webkitRTCPeerConnection;
-        var useWebKit = !window.webkitRTCPeerConnection;
-        var mediaConstraints = {
-            optional: [{RtpDataChannels: true}]
-        };
-        var servers = {iceServers: []};
-        var pc = new RTCPeerConnection(servers, mediaConstraints);
-
-        function handleCandidate (candidate) {
-            var ip_regex = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/
-            var ip_addr = ip_regex.exec(candidate)[1];
-            if(ipDuplicate[ip_addr] === undefined) {
-                callback(ip_addr);
-            }
-            ipDuplicate[ip_addr] = true;
-        }
-        pc.onicecandidate = function (ice) {
-            if(ice.candidate) {
-                handleCandidate(ice.candidate.candidate);
-            }
-        };
-        pc.createDataChannel("");
-        pc.createOffer(function(result){
-            pc.setLocalDescription(result, function(){}, function(){});
-        }, function(){});
+    getLocalIP: function () {
+        //return new Promise(function(resolve,reject){
+            var RTCPeerConnection = window.RTCPeerConnection
+                || window.mozRTCPeerConnection
+                || window.webkitRTCPeerConnection;
+            var pc = new RTCPeerConnection({iceServers:[]}), noop = function(){};
+            pc.createDataChannel("");
+            pc.createOffer(pc.setLocalDescription.bind(pc), noop);
+            return pc.onicecandidate = function (ice) {
+                if(!ice || !ice.candidate || !ice.candidate.candidate) {
+                    return;
+                }
+                var myIP = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/.exec(ice.candidate.candidate)[1];
+                pc.onicecandidate = noop;
+                console.log(myIP);
+                return myIP;
+            };
+           
+       // });
 
     },
     getBrowser: function (client) {
