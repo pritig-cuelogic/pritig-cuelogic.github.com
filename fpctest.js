@@ -1,13 +1,14 @@
 'use strict';
 
+/*Load jquery if not loaded*/
 
 var fpcObject = {
-    getFingerPrint: function (client) {
+    getFingerPrint: function(client) {
         var canvasPrint = client.getCanvasPrint();
         var fingerprint = client.getCustomFingerprint(canvasPrint);
         return fingerprint;
     },
-    getDeviceInfo: function (client) {
+    getDeviceInfo: function(client) {
         var os = client.getOS();
         var isMobile = client.isMobile();
         var device;
@@ -34,22 +35,19 @@ var fpcObject = {
         };
         return screenInfo;
     },
-    getBrowser: function (client) {
+    getBrowser: function(client) {
         var browser = client.getBrowser();
         return browser;
     }
-
 };
 
-
 (function () {
-    jQuery(document).ready(function () {
-            var client = new ClientJS();
-            var fingerprint = fpcObject.getFingerPrint(client);
-            var deviceInfo = fpcObject.getDeviceInfo(client);
-            var screenInfo = fpcObject.getScreenInfo();
-            var browserName = fpcObject.getBrowser(client);
-            console.log(fingerprint);
-    });   
-    
+    jQuery(document).ready(function() {
+        var client = new ClientJS();
+        var fingerprint = fpcObject.getFingerPrint(client);
+        var deviceInfo = fpcObject.getDeviceInfo(client);
+        var screenInfo = fpcObject.getScreenInfo();
+        var browserName = fpcObject.getBrowser(client);
+        console.log(fingerprint);
+    });
 })();
