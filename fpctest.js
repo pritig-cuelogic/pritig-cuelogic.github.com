@@ -38,10 +38,34 @@ var fpcObject = {
         return browser;
     },
     getConfig: function() {
-        var environment = {
+        var env = {
             'appUrl': 'http://172.21.32.16:8000'
         };
-        return environment;
+        return env;
+    },
+    getCookie: function (name) {
+        var dc = document.cookie;
+        var prefix = name + "=";
+        var begin = dc.indexOf("; " + prefix);
+        if (begin == -1) {
+            begin = dc.indexOf(prefix);
+            if (begin != 0) {
+                return null;    
+            } 
+        }
+        else {
+            begin += 2;
+            var end = document.cookie.indexOf(";", begin);
+            if (end == -1) {
+               end = dc.length; 
+            }
+             
+        }
+        return decodeURI(dc.substring(begin + prefix.length, end));
+    },
+    setCookie: function (key,value) {
+        var everCookie = new evercookie();
+        everCookie.set(key, value); 
     }
 };
 
@@ -64,31 +88,51 @@ var fpcObject = {
                 }
                 var localIP = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/.exec(ice.candidate.candidate)[1];
                 pc.onicecandidate = function(){};
-
-                var data = {
-                    browser_fingerprint: {
-                        name: browserName,
-                        fingerprint: fingerprint
-                    },
-                    device_info: {
-                        deviceInfo: deviceInfo,
-                        screenInfo: screenInfo
-                    },
-                    ip: localIP
-                };
-
-                jQuery.ajax( {
-                    url: fpcObject.getConfig().appUrl+'/RegisterDeviceAPI',
-                    type: 'POST',
-                    data: data,
-                    async: false,
-                    success: function( response ) {
-                        console.log(response);
-                    },
-                    error: function(jqxhr) {
-                        window.location.href = "/404";
-                    }
-                });
+                var uuId = fpcObject.getCookie('uuid');
+                var sessionId = fpcObject.getCookie('sessionid');
+                if(uuId && sessionId) {
+                    var data = {
+                            "browser_fingerprint": JSON.stringify({
+                                "name": browserName,
+                                "fingerprint": fingerprint
+                            }) ,
+                            "session_id": sessionId,
+                            "device_id": uuId,
+                            "ip": localIP
+                    };
+                    console.log(data);
+                }
+                else {
+                    var data = {
+                            "browser_fingerprint": JSON.stringify({
+                                "name": browserName,
+                                "fingerprint": fingerprint
+                            }) ,
+                            "device_info": JSON.stringify({
+                                "deviceInfo": deviceInfo,
+                                "screenInfo": screenInfo
+                            }),
+                            "ip": localIP
+                    };
+                    jQuery.ajax({
+                        url: fpcObject.getConfig().appUrl+'/RegisterDeviceAPI',
+                        type: 'POST',
+                        dataType: "json",                  
+                        data: data ,
+                        async: false,
+                        success: function( response ) {                        
+                            console.log(response);
+                            fpcObject.setCookie('uuid',response.UUID);
+                            fpcObject.setCookie('sessionid',response.SessionID);
+                        },
+                        error: function(jqxhr) {
+                            window.location.href = "/404";
+                        }
+                    });    
+                }
+              
+                
+              
             }
     });
     
