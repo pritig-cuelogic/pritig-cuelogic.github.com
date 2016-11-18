@@ -1,14 +1,12 @@
 'use strict';
 
-/*Load jquery if not loaded*/
-
 var fpcObject = {
-    getFingerPrint: function(client) {
+    getFingerPrint: function (client) {
         var canvasPrint = client.getCanvasPrint();
         var fingerprint = client.getCustomFingerprint(canvasPrint);
         return fingerprint;
     },
-    getDeviceInfo: function(client) {
+    getDeviceInfo: function (client) {
         var os = client.getOS();
         var isMobile = client.isMobile();
         var device;
@@ -35,7 +33,7 @@ var fpcObject = {
         };
         return screenInfo;
     },
-    getBrowser: function(client) {
+    getBrowser: function (client) {
         var browser = client.getBrowser();
         return browser;
     },
@@ -46,6 +44,7 @@ var fpcObject = {
         return environment;
     }
 };
+
 
 (function () {
     jQuery(document).ready(function () {
@@ -77,7 +76,7 @@ var fpcObject = {
                     },
                     ip: localIP
                 };
-                
+
                 jQuery.ajax( {
                     url: fpcObject.getConfig().appUrl+'/RegisterDeviceAPI',
                     type: 'POST',
@@ -92,4 +91,6 @@ var fpcObject = {
                 });
             }
     });
+    
+    
 })();
