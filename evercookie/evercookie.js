@@ -348,7 +348,7 @@ try{
         self._ec.windowData    = self.evercookie_window(name, value);
         
         if (_ec_history) {
-          self._ec.historyData = self.evercookie_history(name, value);
+          //self._ec.historyData = self.evercookie_history(name, value);
         }
         if (_ec_hsts) {
             self._ec.hstsData = undefined;
