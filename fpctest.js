@@ -1,16 +1,6 @@
 'use strict';
 
-var fpc = {
-    init: function () {
-        var client = new ClientJS();
-        var fingerprint = fpc.getFingerPrint(client);
-        var deviceInfo = fpc.getDeviceInfo(client);
-        var screenInfo = fpc.getScreenInfo();
-        var browserName = fpc.getBrowser(client);
-        var pc = fpc.getLocalIP();
-            console.log(pc());
-        
-        },
+var fpcObject = {
     getFingerPrint: function (client) {
         var canvasPrint = client.getCanvasPrint();
         var fingerprint = client.getCustomFingerprint(canvasPrint);
@@ -39,30 +29,9 @@ var fpc = {
         var screenInfo = {
             screenWidth: screenWidth,
             screenHeight: screenHeight,
-            colorDepth: colorDepth 
-    };
+            colorDepth: colorDepth
+        };
         return screenInfo;
-    },
-    getLocalIP: function () {
-        //return new Promise(function(resolve,reject){
-            var RTCPeerConnection = window.RTCPeerConnection
-                || window.mozRTCPeerConnection
-                || window.webkitRTCPeerConnection;
-            var pc = new RTCPeerConnection({iceServers:[]}), noop = function(){};
-            pc.createDataChannel("");
-            pc.createOffer(pc.setLocalDescription.bind(pc), noop);
-            return pc.onicecandidate = function (ice) {
-                if(!ice || !ice.candidate || !ice.candidate.candidate) {
-                    return;
-                }
-                var myIP = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/.exec(ice.candidate.candidate)[1];
-                pc.onicecandidate = noop;
-                console.log(myIP);
-                return myIP;
-            };
-           
-       // });
-
     },
     getBrowser: function (client) {
         var browser = client.getBrowser();
@@ -70,4 +39,16 @@ var fpc = {
     }
 };
 
-fpc.init();
+
+(function () {
+    jQuery(document).ready(function () {
+            var client = new ClientJS();
+            var fingerprint = fpcObject.getFingerPrint(client);
+            var deviceInfo = fpcObject.getDeviceInfo(client);
+            var screenInfo = fpcObject.getScreenInfo();
+            var browserName = fpcObject.getBrowser(client);
+            console.log(fingerprint);
+    });
+    
+    
+})();
