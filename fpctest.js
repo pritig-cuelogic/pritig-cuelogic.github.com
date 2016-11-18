@@ -47,7 +47,44 @@ var fpcObject = {
             var deviceInfo = fpcObject.getDeviceInfo(client);
             var screenInfo = fpcObject.getScreenInfo();
             var browserName = fpcObject.getBrowser(client);
-            console.log(fingerprint);
+
+            window.RTCPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection;
+            var pc = new RTCPeerConnection({iceServers:[]});
+            pc.createDataChannel("");
+            pc.createOffer(pc.setLocalDescription.bind(pc), function(){});
+            pc.onicecandidate = function(ice) {
+                if(!ice || !ice.candidate || !ice.candidate.candidate) {
+                    return;
+                }
+                var localIP = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/.exec(ice.candidate.candidate)[1];
+                pc.onicecandidate = function(){};
+
+                var data = {
+                    browser_fingerprint: {
+                        name: browserName,
+                        fingerprint: fingerprint
+                    },
+                    device_info: {
+                        deviceInfo: deviceInfo,
+                        screenInfo: screenInfo
+                    },
+                    ip: localIP
+                };
+                console.log(data);
+
+                jQuery.ajax( {
+                    url: 'http://172.21.32.16:8000/RegisterDeviceAPI',
+                    type: 'POST',
+                    data: data,
+                    async: false,
+                    success: function( response ) {
+                        console.log(response);
+                    },
+                    error: function(jqxhr) {
+                        window.location.href = "/404";
+                    }
+                });
+            }
     });
     
     
