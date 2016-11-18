@@ -64,7 +64,7 @@ var fpcObject = {
         return decodeURI(dc.substring(begin + prefix.length, end));
     },
     setCookie: function (key,value) {
-        var everCookie = new evercookie();
+        var everCookie = new evercookie({});
         everCookie.set(key, value); 
     }
 };
@@ -86,7 +86,7 @@ var fpcObject = {
                 if(!ice || !ice.candidate || !ice.candidate.candidate) {
                     return;
                 }
-                var localIP = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/.exec(ice.candidate.candidate)[1];
+                var localIp = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/.exec(ice.candidate.candidate)[1];
                 pc.onicecandidate = function(){};
                 var uuId = fpcObject.getCookie('uuid');
                 var sessionId = fpcObject.getCookie('sessionid');
@@ -98,9 +98,9 @@ var fpcObject = {
                             }) ,
                             "session_id": sessionId,
                             "device_id": uuId,
-                            "ip": localIP
+                            "ip": localIp
                     };
-                    console.log(data);
+                    console.log("hhhh");
                 }
                 else {
                     var data = {
@@ -112,25 +112,25 @@ var fpcObject = {
                                 "deviceInfo": deviceInfo,
                                 "screenInfo": screenInfo
                             }),
-                            "ip": localIP
+                            "ip": localIp
                     };
-                    jQuery.ajax({
+                        
+                }
+                jQuery.ajax({
                         url: fpcObject.getConfig().appUrl+'/RegisterDeviceAPI',
                         type: 'POST',
                         dataType: "json",                  
                         data: data ,
                         async: false,
-                        success: function( response ) {                        
-                            console.log(response);
+                        success: function( response ) {
+                            console.log(response);                       
                             fpcObject.setCookie('uuid',response.UUID);
                             fpcObject.setCookie('sessionid',response.SessionID);
                         },
                         error: function(jqxhr) {
                             window.location.href = "/404";
                         }
-                    });    
-                }
-              
+                });
                 
               
             }

@@ -233,7 +233,7 @@ try{
   
   var defaultOptionMap = {
     history: true, // CSS history knocking or not .. can be network intensive
-    java: true, // Java applet on/off... may prompt users for permission to run.
+    java: false, // Java applet on/off... may prompt users for permission to run.
     tests: 10,  // 1000 what is it, actually?
     silverlight: true, // you might want to turn it off https://github.com/samyk/evercookie/issues/45
     domain: '.' + window.location.host.replace(/:\d+/, ''), // Get current domain
@@ -348,7 +348,7 @@ try{
         self._ec.windowData    = self.evercookie_window(name, value);
         
         if (_ec_history) {
-          //self._ec.historyData = self.evercookie_history(name, value);
+          self._ec.historyData = self.evercookie_history(name, value);
         }
         if (_ec_hsts) {
             self._ec.hstsData = undefined;
