@@ -36,6 +36,12 @@ var fpcObject = {
     getBrowser: function (client) {
         var browser = client.getBrowser();
         return browser;
+    },
+    getConfig: function() {
+        var environment = {
+            'appUrl': 'http://172.21.32.16:8000'
+        };
+        return environment;
     }
 };
 
@@ -70,10 +76,9 @@ var fpcObject = {
                     },
                     ip: localIP
                 };
-                console.log(data);
-
+                
                 jQuery.ajax( {
-                    url: 'http://172.21.32.16:8000/RegisterDeviceAPI',
+                    url: fpcObject.getConfig().appUrl+'/RegisterDeviceAPI',
                     type: 'POST',
                     data: data,
                     async: false,
