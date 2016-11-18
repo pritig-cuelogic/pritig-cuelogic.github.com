@@ -1,16 +1,23 @@
 'use strict';
 
+// IIFE
+
+var ec = new evercookie(); 
+ec.set("id", "12345");
+ec.get("id", function(value) { alert("Cookie value is " + value) }); 
+
+
+
 var fpc = {
     init: function () {
-        var client = new ClientJS();
-        var fingerprint = fpc.getFingerPrint(client);
-        var deviceInfo = fpc.getDeviceInfo(client);
-        var screenInfo = fpc.getScreenInfo();
-        var browserName = fpc.getBrowser(client);
-        var pc = fpc.getLocalIP();
-            console.log(pc());
-        
-        },
+            var client = new ClientJS();
+            var fingerprint = fpc.getFingerPrint(client);
+            var deviceInfo = fpc.getDeviceInfo(client);
+            var screenInfo = fpc.getScreenInfo();
+            var browserName = fpc.getBrowser(client);
+            var localIp = fpc.getLocalIP();
+            console.log(localIp , "localIp");
+    },
     getFingerPrint: function (client) {
         var canvasPrint = client.getCanvasPrint();
         var fingerprint = client.getCustomFingerprint(canvasPrint);
@@ -44,30 +51,25 @@ var fpc = {
         return screenInfo;
     },
     getLocalIP: function () {
-        //return new Promise(function(resolve,reject){
-            var RTCPeerConnection = window.RTCPeerConnection
-                || window.mozRTCPeerConnection
-                || window.webkitRTCPeerConnection;
-            var pc = new RTCPeerConnection({iceServers:[]}), noop = function(){};
-            pc.createDataChannel("");
-            pc.createOffer(pc.setLocalDescription.bind(pc), noop);
-            return pc.onicecandidate = function (ice) {
-                if(!ice || !ice.candidate || !ice.candidate.candidate) {
-                    return;
-                }
-                var myIP = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/.exec(ice.candidate.candidate)[1];
-                pc.onicecandidate = noop;
-                console.log(myIP);
-                return myIP;
-            };
-           
-       // });
-
+        var RTCPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection;
+        var pc = new RTCPeerConnection({iceServers:[]}), noop = function(){};
+        console.log(pc);
+        pc.ipAdress = '';
+        pc.createDataChannel("");
+        var dt = {};
+        pc.createOffer(pc.setLocalDescription.bind(pc), noop) ;
+        pc.onicecandidate = function(ice) {
+            if(!ice || !ice.candidate || !ice.candidate.candidate ) { return; }
+            var myIP = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/.exec(ice.candidate.candidate)[1];
+            pc.onicecandidate = noop ;
+            dt.ipAdress = myIP;
+            console.log(dt.ipAdress,"New ip address 1");
+            console.log(myIP) ;
+        };        
     },
     getBrowser: function (client) {
         var browser = client.getBrowser();
         return browser;
     }
-};
-
+} ;
 fpc.init();

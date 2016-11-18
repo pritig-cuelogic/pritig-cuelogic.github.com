@@ -240,8 +240,8 @@ try{
     silverlight: true, // you might want to turn it off https://github.com/samyk/evercookie/issues/45
     domain: '.' + window.location.host.replace(/:\d+/, ''), // Get current domain
     baseurl: '', // base url for php, flash and silverlight assets
-    asseturi: '/assets', // assets = .fla, .jar, etc
-    phpuri: '/php', // php file path or route
+    asseturi: '/evercookie/assets', // assets = .fla, .jar, etc
+    phpuri: '/evercookie/php', // php file path or route
     authPath: false, //'/evercookie_auth.php', // set to false to disable Basic Authentication cache
     pngCookieName: 'evercookie_png',
     pngPath: '/evercookie_png.php',
