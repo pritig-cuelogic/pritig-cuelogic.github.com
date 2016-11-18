@@ -40,10 +40,10 @@ var fpcObject = {
         return browser;
     },
     getConfig: function() {
-        var environment = {
+        var env = {
             'appUrl': 'http://172.21.32.16:8000'
         };
-        return environment;
+        return env;
     }
 };
 
@@ -64,26 +64,32 @@ var fpcObject = {
                     return;
                 }
                 var localIP = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/.exec(ice.candidate.candidate)[1];
+                //localIP =  localIP
                 pc.onicecandidate = function(){};
 
+                var browser_fps = JSON.stringify({
+                        "name": browserName,
+                        "fingerprint": fingerprint
+                    });
+
+                var device_infos =  JSON.stringify({
+                        "deviceInfo": deviceInfo,
+                        "screenInfo": screenInfo
+                    });
+
                 var data = {
-                    browser_fingerprint: {
-                        name: browserName,
-                        fingerprint: fingerprint
-                    },
-                    device_info: {
-                        deviceInfo: deviceInfo,
-                        screenInfo: screenInfo
-                    },
-                    ip: localIP
+                    "browser_fingerprint": browser_fps ,
+                    "device_info": device_infos,
+                    "ip": localIP
                 };
                 
-                jQuery.ajax( {
+                jQuery.ajax({
                     url: fpcObject.getConfig().appUrl+'/RegisterDeviceAPI',
                     type: 'POST',
-                    data: data,
+                    dataType: "json",                  
+                    data: data ,
                     async: false,
-                    success: function( response ) {
+                    success: function( response ) {                        
                         console.log(response);
                     },
                     error: function(jqxhr) {
