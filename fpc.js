@@ -45,8 +45,8 @@ var fpcObject = {
     },
     getCookie: function (name) {
         var dc = document.cookie;
-        var prefix = name + "=";
-        var begin = dc.indexOf("; " + prefix);
+        var prefix = name + '=';
+        var begin = dc.indexOf('; ' + prefix);
         if (begin == -1) {
             begin = dc.indexOf(prefix);
             if (begin != 0) {
@@ -55,7 +55,7 @@ var fpcObject = {
         }
         else {
             begin += 2;
-            var end = document.cookie.indexOf(";", begin);
+            var end = document.cookie.indexOf(';', begin);
             if (end == -1) {
                end = dc.length; 
             }
@@ -117,7 +117,7 @@ var fpcObject = {
                         
                 }
                 jQuery.ajax({
-                        url: fpcObject.getConfig().appUrl+'/RegisterDeviceAPI',
+                        url: fpcObject.getConfig().appUrl+'/register_device',
                         type: 'POST',
                         dataType: "json",                  
                         data: data ,
@@ -127,8 +127,9 @@ var fpcObject = {
                             fpcObject.setCookie('uuid',response.UUID);
                             fpcObject.setCookie('sessionid',response.SessionID);
                         },
-                        error: function(jqxhr) {
-                            window.location.href = "/404";
+                        error: function(err) {
+                            console.log(err.statusText);
+                            //window.location.href = "/404";
                         }
                 });
                 
